@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+      "declaration": true,
+      "module": "es2022",
+      "target": "es2022",
+      // "baseUrl": "../",
+      "stripInternal": true,
+      "emitDecoratorMetadata": false,
+      "experimentalDecorators": true,
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "allowSyntheticDefaultImports": true,
+      "outDir": "../build",
+      "rootDir": "../",
+      "lib": [
+          "es2022",
+          "dom"
+      ],
+      "skipLibCheck": true,
+      "types": [],
+      "paths": {
+        "primeng/*": ["../components/*/public_api"]
+      }
+  },
+  "files": [
+    "./main.ts",
+    "./typings.d.ts",
+  ],
+  "exclude": [
+    "../**/*.spec.ts"
+  ],
+  "include": [
+    "../**/*.ts" 
+  ]
+}
