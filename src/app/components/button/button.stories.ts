@@ -21,7 +21,7 @@ const meta: Meta<Button> = {
     icon: { control: 'select', options: icons() },
     loadingIcon: { control: 'select', options: icons() },
     style: { control: 'text' },
-    styleClass: { control: 'text' }
+    styleClass: { control: 'select', options: ['p-button-primary', 'p-button-secondary', 'p-button-success', 'p-button-danger', 'p-button-info', 'p-button-warning', 'p-button-help',], }
   },
 };
 
@@ -37,7 +37,7 @@ const _: Partial<Button> = {
   disabled: false,
   iconPos: 'left',
   badgeClass: '',
-  styleClass: ''
+  styleClass: 'p-button-primary'
 }
 
 // More on writing stories with args: https://storybook.js.org/docs/angular/writing-stories/args
