@@ -4,7 +4,7 @@ import icons from '../../storybook/icons';
 
 // More on how to set up stories at: https://storybook.js.org/docs/angular/writing-stories/introduction
 const meta: Meta<Button> = {
-  title: 'Components/Form/Button',
+  title: 'Components/Button/Button',
   component: Button,
   tags: ['autodocs'],
   render: (args: Button) => ({
@@ -17,12 +17,12 @@ const meta: Meta<Button> = {
     ariaLabel: { control: 'text' },
     badge: { control: 'text' },
     badgeClass: { control: 'text' },
-    disabled: { control: 'boolean', defaultValue: false },
+    disabled: { control: 'boolean' },
     icon: { control: 'select', options: icons() },
     loadingIcon: { control: 'select', options: icons() },
     style: { control: 'text' },
-    styleClass: { control: 'select', options: ['p-button-primary', 'p-button-secondary', 'p-button-success', 'p-button-danger', 'p-button-info', 'p-button-warning', 'p-button-help',], }
-  },
+    styleClass: { control: 'text' }
+  }
 };
 
 export default meta;
@@ -40,14 +40,120 @@ const _: Partial<Button> = {
   styleClass: 'p-button-primary'
 }
 
+// ['p-button-primary', 'p-button-secondary', 'p-button-success', 'p-button-danger', 'p-button-info', 'p-button-warning', 'p-button-help',]
 // More on writing stories with args: https://storybook.js.org/docs/angular/writing-stories/args
-export const Simple: Story = {
+export const Basic: Story = {
   args: {
     ..._
   }
 };
 
+export const Directive: Story = {
+  args: {
+    ..._,
+    styleClass: 'p-button-secondary'
+  }
+};
+
+export const Link: Story = {
+  args: {
+    ..._,
+    styleClass: 'p-button-success'
+  }
+};
+
+export const Icons: Story = {
+  args: {
+    ..._,
+    styleClass: 'p-button-danger'
+  }
+};
+
 export const Loading: Story = {
+  args: {
+    ..._,
+    styleClass: 'p-button-info'
+  }
+};
+
+export const Severity: Story = {
+  args: {
+    ..._,
+    styleClass: 'p-button-warning'
+  }
+};
+
+export const Disabled: Story = {
+  args: {
+    ..._,
+    styleClass: 'p-button-help'
+  }
+};
+
+export const Raised: Story = {
+  args: {
+    ..._,
+    loading: true,
+  }
+};
+
+export const Rounded: Story = {
+  args: {
+    ..._,
+    loading: true,
+  }
+};
+
+export const Text: Story = {
+  args: {
+    ..._,
+    loading: true,
+  }
+};
+
+export const RaisedText: Story = {
+  args: {
+    ..._,
+    loading: true,
+  }
+};
+
+export const Outline: Story = {
+  args: {
+    ..._,
+    loading: true,
+  }
+};
+
+export const IconOnly: Story = {
+  args: {
+    ..._,
+    loading: true,
+  }
+};
+
+export const Badges: Story = {
+  args: {
+    ..._,
+    loading: true,
+  }
+};
+
+export const ButtonSet: Story = {
+  args: {
+    ..._,
+    loading: true,
+  }
+};
+
+export const Sizes: Story = {
+  args: {
+    ..._,
+    loading: true,
+  }
+};
+
+export const Template: Story = {
   args: {
     ..._,
     loading: true,
