@@ -1,24 +1,121 @@
 <div class="doc-component">
     <ul class="doc-tabmenu" *ngIf="docs && apiDocs">
-        <li [ngClass]="{'doc-tabmenu-active': activeTab === 0}">
+        <li [ngClass]="{ 'doc-tabmenu-active': activeTab === 0 }">
             <button type="button" (click)="activateTab(0)">FEATURES</button>
         </li>
-        <li *ngIf="apiDocs" [ngClass]="{'doc-tabmenu-active': activeTab === 1}" >
+        <li *ngIf="apiDocs" [ngClass]="{ 'doc-tabmenu-active': activeTab === 1 }">
             <button type="button" (click)="activateTab(1)">API</button>
+        </li>
+        <li [ngClass]="{ 'doc-tabmenu-active': activeTab === 2 }">
+            <button type="button" (click)="activateTab(2)">PLAYGROUND</button>
         </li>
     </ul>
     <div class="doc-tabpanels">
-        <div [ngClass]="{'hidden': activeTab === 1}" class="doc-tabpanel">
+        <div [ngClass]="{ hidden: activeTab !== 2 }" class="doc-tabpanel">
             <div class="doc-main">
                 <div class="doc-intro">
-                    <h1>{{header}}</h1>
-                    <p>{{description}}</p>
+                    <h1>{{ header }}</h1>
+                    <p>{{ description }}</p>
+                </div>
+                <div id="canvas" class="surface-card">
+                    <button
+                        pButton
+                        id="copy"
+                        type="button"
+                        class="p-button-rounded p-button-text p-button-plain h-2rem w-2rem p-0 inline-flex align-items-center justify-content-center"
+                        icon="pi pi-copy"
+                        pTooltip="Copy Code"
+                        tooltipPosition="bottom"
+                        tooltipStyleClass="doc-section-code-tooltip"
+                    ></button>
+                    <p-button icon="pi pi-star" label="Hello Prime" />
+                </div>
+                <div id="wrapper">
+                    <div id="editor" class="surface-card">
+                        <table class="doc-table">
+                            <tbody>
+                                <tr>
+                                    <td>Label</td>
+                                    <td><input pInputText type="text" value="Hello Prime" /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Icon</td>
+                                    <td><p-autoComplete [(ngModel)]="icon" [dropdown]="true" /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Icon Position</td>
+                                    <td><p-dropdown [(ngModel)]="dropdownPosition" [options]="options" /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Severity</td>
+                                    <td><p-dropdown [(ngModel)]="severity" [options]="severityOptions" /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Ripple</td>
+                                    <td><p-selectButton [options]="booleanOptions" [(ngModel)]="ripple" optionLabel="label" optionValue="value"></p-selectButton></td>
+                                    <td>This can also be enabled globally</td>
+                                </tr>
+                                <tr>
+                                    <td>Badge</td>
+                                    <td><input pInputText type="text" value="" /></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Disabled</td>
+                                    <td><p-selectButton [options]="booleanOptions" [(ngModel)]="loading" optionLabel="label" optionValue="value"></p-selectButton></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Loading</td>
+                                    <td><p-selectButton [options]="booleanOptions" [(ngModel)]="loading" optionLabel="label" optionValue="value"></p-selectButton></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Raised</td>
+                                    <td><p-selectButton [options]="booleanOptions" [(ngModel)]="loading" optionLabel="label" optionValue="value"></p-selectButton></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Outlined</td>
+                                    <td><p-selectButton [options]="booleanOptions" [(ngModel)]="loading" optionLabel="label" optionValue="value"></p-selectButton></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Link</td>
+                                    <td><p-selectButton [options]="booleanOptions" [(ngModel)]="loading" optionLabel="label" optionValue="value"></p-selectButton></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Size</td>
+                                    <td><p-dropdown [(ngModel)]="size" [options]="sizeOptions" /></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <div id="code" class="surface-card">
+                            <app-code [code]="code" [hideToggleCode]="true" hideStackBlitz="true" hideCodeSandbox="true" selector="button-basic-demo"></app-code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div [ngClass]="{ hidden: activeTab !== 0 }" class="doc-tabpanel">
+            <div class="doc-main">
+                <div class="doc-intro">
+                    <h1>{{ header }}</h1>
+                    <p>{{ description }}</p>
                 </div>
                 <app-docsection [docs]="docs"></app-docsection>
             </div>
             <app-docsection-nav [docs]="docs"></app-docsection-nav>
         </div>
-        <div [ngClass]="{'hidden': activeTab === 0}">
+        <div [ngClass]="{ hidden: activeTab !== 1 }">
             <app-docapisection [docs]="apiDocs" [header]="header" class="doc-tabpanel"></app-docapisection>
         </div>
     </div>

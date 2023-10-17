@@ -14,9 +14,12 @@ import { AppDocApiTable } from './docapitable/app.docapitable.component';
 import { AppDoc } from './app.doc.component';
 import { HostDirective } from './hostdirective/host.directive';
 import { RouterModule } from '@angular/router';
+import { DropdownModule } from 'primeng/dropdown';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { SelectButtonModule } from 'primeng/selectbutton';
 
 @NgModule({
-    imports: [CommonModule, FormsModule, ButtonModule, InputTextModule, TooltipModule, AppCodeModule, RouterModule],
+    imports: [CommonModule, DropdownModule, SelectButtonModule, AutoCompleteModule, FormsModule, ButtonModule, InputTextModule, TooltipModule, AppCodeModule, RouterModule],
     exports: [AppDocSectionTextComponent, AppDocApiSection, AppDocSectionNavComponent, AppDocSectionsComponent, AppDevelopmentSection, AppDoc, AppDocApiTable],
     declarations: [AppDocSectionTextComponent, AppDocApiSection, AppDocSectionNavComponent, AppDocSectionsComponent, AppDevelopmentSection, AppDoc, AppDocApiTable, HostDirective]
 })
