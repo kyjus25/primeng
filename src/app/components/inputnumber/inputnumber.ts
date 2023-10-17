@@ -85,7 +85,7 @@ export const INPUTNUMBER_VALUE_ACCESSOR: any = {
                 (focus)="onInputFocus($event)"
                 (blur)="onInputBlur($event)"
             />
-            <ng-container *ngIf="buttonLayout != 'vertical' && showClear && value">
+            <ng-container *ngIf="buttonLayout != 'vertical' && showClear && (value || value === 0)">
                 <TimesIcon *ngIf="!clearIconTemplate" [ngClass]="'p-inputnumber-clear-icon'" (click)="clear()" />
                 <span *ngIf="clearIconTemplate" (click)="clear()" class="p-inputnumber-clear-icon">
                     <ng-template *ngTemplateOutlet="clearIconTemplate"></ng-template>
@@ -261,7 +261,7 @@ export class InputNumber implements OnInit, AfterContentInit, OnChanges, Control
      */
     @Input() name: string | undefined;
     /**
-     * No description available.
+     * Indicates that whether the input field is required.
      * @group Props
      */
     @Input() required: boolean | undefined;
@@ -380,10 +380,6 @@ export class InputNumber implements OnInit, AfterContentInit, OnChanges, Control
      * @group Props
      */
     @Input() showClear: boolean = false;
-    /**
-     * No description available.
-     * @group Emits
-     */
     /**
      * When present, it specifies that the element should be disabled.
      * @group Props
@@ -935,6 +931,10 @@ export class InputNumber implements OnInit, AfterContentInit, OnChanges, Control
             event.preventDefault();
             let data = (event.clipboardData || (this.document as any).defaultView['clipboardData']).getData('Text');
             if (data) {
+                if (this.maxlength) {
+                    data = data.toString().substring(0, this.maxlength);
+                }
+
                 let filteredData = this.parseValue(data);
                 if (filteredData != null) {
                     this.insert(event, filteredData.toString());

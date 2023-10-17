@@ -19,6 +19,7 @@ import {
     PLATFORM_ID,
     QueryList,
     Renderer2,
+    SimpleChanges,
     TemplateRef,
     ViewChild,
     ViewEncapsulation,
@@ -73,13 +74,13 @@ const hideAnimation = animation([animate('{{transition}}', style({ transform: '{
                 (@animation.start)="onAnimationStart($event)"
                 (@animation.done)="onAnimationEnd($event)"
                 role="dialog"
-                [attr.aria-labelledby]="getAriaLabelledBy()"
+                [attr.aria-labelledby]="ariaLabelledBy"
                 [attr.aria-modal]="true"
             >
                 <div *ngIf="resizable" class="p-resizable-handle" style="z-index: 90;" (mousedown)="initResize($event)"></div>
                 <div #titlebar class="p-dialog-header" (mousedown)="initDrag($event)" *ngIf="showHeader">
-                    <span [id]="getAriaLabelledBy()" class="p-dialog-title" *ngIf="!headerFacet && !headerTemplate">{{ header }}</span>
-                    <span [id]="getAriaLabelledBy()" class="p-dialog-title" *ngIf="headerFacet">
+                    <span [id]="ariaLabelledBy + '_title'" class="p-dialog-title" *ngIf="!headerFacet && !headerTemplate">{{ header }}</span>
+                    <span [id]="ariaLabelledBy + '_title'" class="p-dialog-title" *ngIf="headerFacet">
                         <ng-content select="p-header"></ng-content>
                     </span>
                     <ng-container *ngTemplateOutlet="headerTemplate"></ng-container>
@@ -464,6 +465,8 @@ export class Dialog implements AfterContentInit, OnInit, OnDestroy {
 
     dragging: boolean | undefined;
 
+    ariaLabelledBy: string | undefined;
+
     documentDragListener: VoidListener;
 
     documentDragEndListener: VoidListener;
@@ -554,6 +557,12 @@ export class Dialog implements AfterContentInit, OnInit, OnDestroy {
         }
     }
 
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes.header) {
+            this.ariaLabelledBy = this.getAriaLabelledBy();
+        }
+    }
+
     getAriaLabelledBy() {
         return this.header !== null ? UniqueComponentId() + '_header' : null;
     }
@@ -582,7 +591,7 @@ export class Dialog implements AfterContentInit, OnInit, OnDestroy {
         }
 
         if (this.modal) {
-            DomHandler.addClass(this.document.body, 'p-overflow-hidden');
+            DomHandler.blockBodyScroll();
         }
     }
 
@@ -593,7 +602,7 @@ export class Dialog implements AfterContentInit, OnInit, OnDestroy {
             }
 
             if (this.modal) {
-                DomHandler.removeClass(this.document.body, 'p-overflow-hidden');
+                DomHandler.unblockBodyScroll();
             }
 
             if (!(this.cd as ViewRef).destroyed) {
@@ -606,8 +615,11 @@ export class Dialog implements AfterContentInit, OnInit, OnDestroy {
         this.maximized = !this.maximized;
 
         if (!this.modal && !this.blockScroll) {
-            if (this.maximized) DomHandler.addClass(this.document.body, 'p-overflow-hidden');
-            else DomHandler.removeClass(this.document.body, 'p-overflow-hidden');
+            if (this.maximized) {
+                DomHandler.blockBodyScroll();
+            } else {
+                DomHandler.unblockBodyScroll();
+            }
         }
 
         this.onMaximize.emit({ maximized: this.maximized });
@@ -637,7 +649,7 @@ export class Dialog implements AfterContentInit, OnInit, OnDestroy {
                 for (let breakpoint in this.breakpoints) {
                     innerHTML += `
                         @media screen and (max-width: ${breakpoint}) {
-                            .p-dialog[${this.id}] {
+                            .p-dialog[${this.id}]:not(.p-dialog-maximized) {
                                 width: ${this.breakpoints[breakpoint]} !important;
                             }
                         }
@@ -692,34 +704,40 @@ export class Dialog implements AfterContentInit, OnInit, OnDestroy {
 
     onDrag(event: MouseEvent) {
         if (this.dragging) {
-            let containerWidth = DomHandler.getOuterWidth(this.container);
-            let containerHeight = DomHandler.getOuterHeight(this.container);
-            let deltaX = event.pageX - (this.lastPageX as number);
-            let deltaY = event.pageY - (this.lastPageY as number);
-            let offset = (this.container as HTMLDivElement).getBoundingClientRect();
-            let leftPos = offset.left + deltaX;
-            let topPos = offset.top + deltaY;
-            let viewport = DomHandler.getViewport();
+            const containerWidth = DomHandler.getOuterWidth(this.container);
+            const containerHeight = DomHandler.getOuterHeight(this.container);
+            const deltaX = event.pageX - (this.lastPageX as number);
+            const deltaY = event.pageY - (this.lastPageY as number);
+            const offset = this.container.getBoundingClientRect();
 
-            (this.container as HTMLDivElement).style.position = 'fixed';
+            const containerComputedStyle = getComputedStyle(this.container);
+
+            const leftMargin = parseFloat(containerComputedStyle.marginLeft);
+            const topMargin = parseFloat(containerComputedStyle.marginTop);
+
+            const leftPos = offset.left + deltaX - leftMargin;
+            const topPos = offset.top + deltaY - topMargin;
+            const viewport = DomHandler.getViewport();
+
+            this.container.style.position = 'fixed';
 
             if (this.keepInViewport) {
                 if (leftPos >= this.minX && leftPos + containerWidth < viewport.width) {
-                    this._style.left = leftPos + 'px';
+                    this._style.left = `${leftPos}px`;
                     this.lastPageX = event.pageX;
-                    (this.container as HTMLDivElement).style.left = leftPos + 'px';
+                    this.container.style.left = `${leftPos}px`;
                 }
 
                 if (topPos >= this.minY && topPos + containerHeight < viewport.height) {
-                    this._style.top = topPos + 'px';
+                    this._style.top = `${topPos}px`;
                     this.lastPageY = event.pageY;
-                    (this.container as HTMLDivElement).style.top = topPos + 'px';
+                    this.container.style.top = `${topPos}px`;
                 }
             } else {
                 this.lastPageX = event.pageX;
-                (this.container as HTMLDivElement).style.left = leftPos + 'px';
+                this.container.style.left = `${leftPos}px`;
                 this.lastPageY = event.pageY;
-                (this.container as HTMLDivElement).style.top = topPos + 'px';
+                this.container.style.top = `${leftPos}px`;
             }
         }
     }
@@ -954,6 +972,7 @@ export class Dialog implements AfterContentInit, OnInit, OnDestroy {
 
         if (this.maximized) {
             DomHandler.removeClass(this.document.body, 'p-overflow-hidden');
+            this.document.body.style.removeProperty('--scrollbar-width');
             this.maximized = false;
         }
 

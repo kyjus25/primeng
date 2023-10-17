@@ -5,7 +5,6 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    ComponentFactoryResolver,
     ComponentRef,
     ElementRef,
     Inject,
@@ -207,7 +206,6 @@ export class DynamicDialogComponent implements AfterViewInit, OnDestroy {
     constructor(
         @Inject(DOCUMENT) private document: Document,
         @Inject(PLATFORM_ID) private platformId: any,
-        private componentFactoryResolver: ComponentFactoryResolver,
         private cd: ChangeDetectorRef,
         public renderer: Renderer2,
         public config: DynamicDialogConfig,
@@ -215,7 +213,7 @@ export class DynamicDialogComponent implements AfterViewInit, OnDestroy {
         public zone: NgZone,
         public primeNGConfig: PrimeNGConfig,
         @SkipSelf() @Optional() private parentDialog: DynamicDialogComponent
-    ) { }
+    ) {}
 
     ngAfterViewInit() {
         this.loadChildComponent(this.childComponentType!);
@@ -228,12 +226,10 @@ export class DynamicDialogComponent implements AfterViewInit, OnDestroy {
     }
 
     loadChildComponent(componentType: Type<any>) {
-        let componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentType);
-
         let viewContainerRef = this.insertionPoint?.viewContainerRef;
         viewContainerRef?.clear();
 
-        this.componentRef = viewContainerRef?.createComponent(componentFactory);
+        this.componentRef = viewContainerRef?.createComponent(componentType);
     }
 
     moveOnTop() {
@@ -649,4 +645,4 @@ export class DynamicDialogComponent implements AfterViewInit, OnDestroy {
     declarations: [DynamicDialogComponent, DynamicDialogContent],
     exports: [SharedModule]
 })
-export class DynamicDialogModule { }
+export class DynamicDialogModule {}

@@ -58,8 +58,10 @@ import {
     TreeTableNodeUnSelectEvent,
     TreeTablePaginatorState,
     TreeTableSortEvent,
-    TreeTableColumnReorderEvent
+    TreeTableColumnReorderEvent,
+    TreeTableNodeExpandEvent
 } from './treetable.interface';
+import { TreeNodeExpandEvent } from 'primeng/tree';
 
 @Injectable()
 export class TreeTableService {
@@ -149,6 +151,7 @@ export class TreeTableService {
                 [showCurrentPageReport]="showCurrentPageReport"
                 [showJumpToPageDropdown]="showJumpToPageDropdown"
                 [showPageLinks]="showPageLinks"
+                [styleClass]="paginatorStyleClass"
                 [locale]="paginatorLocale"
             >
                 <ng-template pTemplate="firstpagelinkicon" *ngIf="paginatorFirstPageLinkIconTemplate">
@@ -213,6 +216,7 @@ export class TreeTableService {
                 [showCurrentPageReport]="showCurrentPageReport"
                 [showJumpToPageDropdown]="showJumpToPageDropdown"
                 [showPageLinks]="showPageLinks"
+                [styleClass]="paginatorStyleClass"
                 [locale]="paginatorLocale"
             >
                 <ng-template pTemplate="firstpagelinkicon" *ngIf="paginatorFirstPageLinkIconTemplate">
@@ -329,6 +333,11 @@ export class TreeTable implements AfterContentInit, OnInit, OnDestroy, Blockable
      * @group Props
      */
     @Input() paginatorPosition: 'top' | 'bottom' | 'both' = 'bottom';
+    /**
+     * Custom style class for paginator
+     * @group Props
+     */
+    @Input() paginatorStyleClass: string | undefined;
     /**
      * Target element to attach the paginator dropdown overlay, valid values are "body" or a local ng-template variable of another element (note: use binding with brackets for template variables, e.g. [appendTo]="mydiv" for a div element having #mydiv as variable name).
      * @group Props
@@ -626,7 +635,7 @@ export class TreeTable implements AfterContentInit, OnInit, OnDestroy, Blockable
      * @param {TreeTableNode} object - Node instance.
      * @group Emits
      */
-    @Output() onNodeExpand: EventEmitter<TreeTableNode> = new EventEmitter<TreeTableNode>();
+    @Output() onNodeExpand: EventEmitter<TreeTableNodeExpandEvent> = new EventEmitter<TreeTableNodeExpandEvent>();
     /**
      * Callback to invoke when a node is collapsed.
      * @param {TreeTableNodeCollapseEvent} event - Node collapse event.

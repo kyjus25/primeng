@@ -86,6 +86,11 @@ export class SelectButton implements ControlValueAccessor {
      */
     @Input() multiple: boolean | undefined;
     /**
+     * Whether selection can not be cleared.
+     * @group Props
+     */
+    @Input() allowEmpty: boolean = true;
+    /**
      * Inline style of the component.
      * @group Props
      */
@@ -172,30 +177,26 @@ export class SelectButton implements ControlValueAccessor {
             return;
         }
 
-        if (this.multiple) {
-            if (this.isSelected(option)) this.removeOption(option);
-            else this.value = [...(this.value || []), this.getOptionValue(option)];
+        const optionValue = this.getOptionValue(option);
 
-            this.onModelChange(this.value);
+        let selected = this.isSelected(option);
 
-            this.onChange.emit({
-                originalEvent: event,
-                value: this.value
-            });
-        } else {
-            let value = this.getOptionValue(option);
-
-            if (this.value !== value) {
-                this.value = this.getOptionValue(option);
-                this.onModelChange(this.value);
-
-                this.onChange.emit({
-                    originalEvent: event,
-                    value: this.value
-                });
-            }
+        if (selected && !this.allowEmpty) {
+            return;
         }
 
+        if (this.multiple) {
+            if (this.isSelected(option)) this.removeOption(option);
+            else this.value = [...(this.value || []), optionValue];
+        } else {
+            this.value = selected ? null : optionValue;
+        }
+
+        this.onModelChange(this.value);
+        this.onChange.emit({
+            originalEvent: event,
+            value: this.value
+        });
         this.onOptionClick.emit({
             originalEvent: event,
             option: option,
@@ -213,7 +214,7 @@ export class SelectButton implements ControlValueAccessor {
 
     isSelected(option: any) {
         let selected = false;
-        let optionValue = this.getOptionValue(option);
+        const optionValue = this.getOptionValue(option);
 
         if (this.multiple) {
             if (this.value && Array.isArray(this.value)) {
@@ -225,7 +226,7 @@ export class SelectButton implements ControlValueAccessor {
                 }
             }
         } else {
-            selected = ObjectUtils.equals(this.getOptionValue(option), this.value, this.dataKey);
+            selected = ObjectUtils.equals(optionValue, this.value, this.dataKey);
         }
 
         return selected;

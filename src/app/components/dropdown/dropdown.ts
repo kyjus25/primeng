@@ -379,11 +379,6 @@ export class Dropdown implements OnInit, AfterViewInit, AfterContentInit, AfterV
      */
     @Input() inputId: string | undefined;
     /**
-     * No description available.
-     * @group Props
-     */
-    @Input() selectId: string | undefined;
-    /**
      * A property to uniquely identify a value in options.
      * @group Props
      */
@@ -533,11 +528,6 @@ export class Dropdown implements OnInit, AfterViewInit, AfterContentInit, AfterV
      * @group Props
      */
     @Input() autofocusFilter: boolean = true;
-    /**
-     * No description available.
-     * @group Props
-     */
-    @Input() overlayDirection: string = 'end';
     /**
      * When present, it specifies that the component should be disabled.
      * @group Props
@@ -1057,10 +1047,12 @@ export class Dropdown implements OnInit, AfterViewInit, AfterContentInit, AfterV
     }
 
     isInputClick(event: MouseEvent): boolean {
+        const target: HTMLElement = event.target as HTMLElement;
         return (
-            DomHandler.hasClass(event.target, 'p-dropdown-clear-icon') ||
-            (event.target as HTMLInputElement).isSameNode(this.accessibleViewChild?.nativeElement) ||
-            ((this.editableInputViewChild && (event.target as HTMLInputElement).isSameNode(this.editableInputViewChild.nativeElement)) as boolean)
+            DomHandler.hasClass(target, 'p-dropdown-clear-icon') ||
+            target.closest('.p-dropdown-clear-icon') !== null ||
+            (target as HTMLInputElement).isSameNode(this.accessibleViewChild?.nativeElement) ||
+            ((this.editableInputViewChild && (target as HTMLInputElement).isSameNode(this.editableInputViewChild.nativeElement)) as boolean)
         );
     }
 
@@ -1316,6 +1308,7 @@ export class Dropdown implements OnInit, AfterViewInit, AfterContentInit, AfterV
             case 27:
             case 9:
                 this.hide();
+                event.preventDefault();
                 break;
 
             //search item based on keyboard input
@@ -1482,7 +1475,7 @@ export class Dropdown implements OnInit, AfterViewInit, AfterContentInit, AfterV
     }
 
     onFilterInputChange(event: Event | any): void {
-        let inputValue = (event.target as HTMLInputElement).value;
+        let inputValue: string = (event.target as HTMLInputElement).value?.trim();
         if (inputValue && inputValue.length) {
             this._filterValue = inputValue;
             this.activateFilter();
