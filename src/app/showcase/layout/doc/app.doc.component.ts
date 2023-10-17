@@ -45,6 +45,10 @@ import { Code } from '../../domain/code';
                 border-radius: 10px;
             }
 
+            :host ::ng-deep .language-markup {
+                margin-top: 0;
+            }
+
             :host ::ng-deep #code code {
                 left: -100px;
                 background: transparent !important;
@@ -94,7 +98,7 @@ export class AppDoc implements OnInit, OnChanges {
             <p-button 
               pRipple
               label="Hello Prime"
-              icon="pi pi-user"
+              icon="pi pi-star"
             />
         `
     };
